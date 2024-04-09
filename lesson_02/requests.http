@@ -1,0 +1,20 @@
+### Trigger JOB 1
+POST http://127.0.0.1:8081/job1
+Content-Type: application/json
+
+{
+  "data": "2022-08-09",
+  "raw_dir": "/app/raw/sales/2022-08-09",
+  "page": 1
+}
+
+### Trigger JOB 2
+POST 127.0.0.1:8081/127.0.0.1:8081/job2
+Content-Type: application/json
+
+{
+  "raw_dir": "/app/raw/sales/2022-08-09",
+  "stg_dir": "/app/stg/sales/2022-08-09"
+}
+
+###
