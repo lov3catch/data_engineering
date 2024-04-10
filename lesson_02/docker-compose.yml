@@ -1,0 +1,19 @@
+version: "3.8"
+services:
+  app:
+    build:
+      context: .
+    volumes:
+      - .:/app
+    working_dir: /app
+    expose:
+      - 8081
+    ports:
+      - "8081:8081"
+#    tty: true
+    #    command: flask --app server run --host=0.0.0.0 --port=8080 --debug
+    #    command: gunicorn --workers 4 --bind 0.0.0.0:8080 server:app
+    command: gunicorn --reload -w 4 -b 0.0.0.0:8081 main:app
+    env_file:
+      - .env
+
