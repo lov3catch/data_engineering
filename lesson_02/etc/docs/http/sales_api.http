@@ -1,0 +1,6 @@
+### Sales API
+GET https://fake-api-vycpfa6oca-uc.a.run.app/sales?page=1&dat=2022-08-09
+Content-Type: application/json
+Authorization: secret
+
+###
