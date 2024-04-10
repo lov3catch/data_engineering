@@ -6,7 +6,7 @@ info:
 servers:
   - url: 'http:127.0.0.1:8081'
 paths:
-  /job1:
+  /:
     post:
       summary: Trigger logic - parsing salse
       requestBody:
@@ -35,27 +35,3 @@ paths:
       responses:
         200:
           description: OK
-  /job2:
-    post:
-      summary: Trigger logic - move data from raw to stg folder
-      requestBody:
-        description: Send data and dir path
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                raw_dir:
-                  type: string
-                  example: /home/username/lesson2/raw/sales/2022-08-09
-                stg_dir:
-                  type: string
-                  example: /home/username/lesson2/stg/sales/2022-08-09
-              required:
-                - raw_dir
-                - stg_dir
-      responses:
-        200:
-          description: OK
-

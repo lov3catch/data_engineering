@@ -1,15 +1,15 @@
 ### Trigger JOB 1
-POST http://127.0.0.1:8081/job1
+POST http://127.0.0.1:8081
 Content-Type: application/json
 
 {
-  "data": "2022-08-09",
+  "date": "2022-08-09",
   "raw_dir": "/app/file_storage/raw/sales/2022-08-09",
   "page": 1
 }
 
 ### Trigger JOB 2
-POST 127.0.0.1:8081/127.0.0.1:8081/job2
+POST 127.0.0.1:8081/127.0.0.1:8082
 Content-Type: application/json
 
 {

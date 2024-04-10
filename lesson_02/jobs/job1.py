@@ -17,7 +17,6 @@ def main(data, page, token):
     raise Exception('Can not parse API')
 
 
-# todo: идемпотентность на двух джобах
 def save(payload, base_path, data, page):
     shutil.rmtree(base_path)
     os.makedirs(base_path, exist_ok=True)
