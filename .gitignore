@@ -1,2 +1,4 @@
 .idea
 /*/.env
+!lesson_02/file_storage/*/sales/.gitignore
+lesson_02/file_storage/*
