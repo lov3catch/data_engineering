@@ -10,3 +10,8 @@ down:
 check:
 	export BASE_DIR=/app/file_storage && python3 checker.py
 
+req:
+	pip freeze | sort > requirements.txt
+
+cs:
+	pycodestyle .

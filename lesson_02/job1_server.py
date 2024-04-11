@@ -16,6 +16,7 @@ def job1_endpoint():
 
     data = job1.main(payload['date'], AUTH_TOKEN)
 
-    job1.save(data, os.path.join(BASE_DIR, payload['raw_dir']), payload['date'])
+    job1.save(data, os.path.join(BASE_DIR, payload['raw_dir']),
+              payload['date'])
 
     return {}, 201

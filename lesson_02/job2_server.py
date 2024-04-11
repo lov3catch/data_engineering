@@ -8,6 +8,7 @@ app = Flask(__name__)
 
 BASE_DIR = os.environ['BASE_DIR']
 
+
 @app.route("/", methods=['POST'])
 def job2_endpoint():
     payload = request.get_json()
