@@ -24,13 +24,9 @@ paths:
                 raw_dir:
                   type: string
                   example: /home/username/lesson2/raw/sales/2022-08-09
-                page:
-                  type: integer
-                  example: 2
               required:
                 - data
                 - raw_dir
-                - page
 
       responses:
         200:
