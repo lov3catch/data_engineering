@@ -1,11 +1,12 @@
 import json
 import os
 import shutil
+from typing import Union
 
 from fastavro import writer, parse_schema
 
 
-def main(src, dest):
+def main(src: Union[str, os.PathLike], dest: Union[str, os.PathLike]):
     with open('/app/schema.avsc', 'r') as f:
         schema = json.load(f)
 

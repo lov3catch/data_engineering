@@ -11,9 +11,13 @@ gunicorn==21.2.0
 idna==3.6
 importlib_metadata==7.1.0
 itsdangerous==2.1.2
+mypy-extensions==1.0.0
+mypy==1.9.0
 packaging==24.0
 pep8==1.7.1
 pycodestyle==2.11.1
 requests==2.31.0
+tomli==2.0.1
+typing_extensions==4.11.0
 urllib3==2.2.1
 zipp==3.18.1
