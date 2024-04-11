@@ -16,7 +16,8 @@ def main(src, dest):
     if not files:
         return
 
-    shutil.rmtree(dest)
+    if os.path.isdir(dest):
+        shutil.rmtree(dest)
     os.makedirs(dest, exist_ok=True)
 
     for file in files:

@@ -1,7 +1,6 @@
 import json
 import os
 import shutil
-
 import requests
 
 
@@ -26,7 +25,8 @@ def main(data, token, page=1, acc=None) -> str:
 
 
 def save(payload, base_path, data):
-    shutil.rmtree(base_path)
+    if os.path.isdir(base_path):
+        shutil.rmtree(base_path)
     os.makedirs(base_path, exist_ok=True)
     path = f'{base_path}/sales-{data}.json'
     with open(path, 'w+') as f:
