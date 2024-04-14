@@ -9,6 +9,11 @@
 Результат відсортувати за спаданням.
 */
 -- SQL code goes here...
+SELECT c.name, COUNT(fc.film_id) AS films_count
+FROM category c
+JOIN film_category fc ON c.category_id = fc.category_id
+GROUP BY c.category_id
+ORDER BY films_count DESC;
 
 
 
