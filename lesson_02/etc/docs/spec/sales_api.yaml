@@ -1,0 +1,67 @@
+openapi: 3.0.3
+info:
+  title: Lesson 2
+  description: Lesson 2
+  version: 1.0.0
+servers:
+  - url: 'https://fake-api-vycpfa6oca-uc.a.run.app'
+paths:
+  /sales:
+    get:
+      parameters:
+        - in: query
+          name: date
+          required: true
+          example: 2022-08-09
+          schema:
+            type: string
+            format: date
+        - in: query
+          name: page
+          required: true
+          example: 2
+          schema:
+            type: integer
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    client:
+                      type: string
+                      example: Kelly Gomez
+                    purchase_date:
+                      type: string
+                      format: date
+                      example: 2022-08-09
+                    product:
+                      type: string
+                      example: coffee machine
+                    price:
+                      type: integer
+                      example: 1008
+#        400:
+#          description: Error
+#          content:
+#            application/json:
+#              schema:
+#                type: object
+#                properties:
+#                  errors:
+#                    type: array
+
+        404:
+          description: Not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "You requested page that doesn't exist: page=100"
