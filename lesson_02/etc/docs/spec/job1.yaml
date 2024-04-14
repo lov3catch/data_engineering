@@ -1,0 +1,33 @@
+openapi: 3.0.3
+info:
+  title: Lesson 2
+  description: Lesson 2
+  version: 1.0.0
+servers:
+  - url: 'http:127.0.0.1:8081'
+paths:
+  /:
+    post:
+      summary: Trigger logic - parsing salse
+      requestBody:
+        description: Send data and dir path
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                data:
+                  type: string
+                  format: date
+                  example: 2022-08-09
+                raw_dir:
+                  type: string
+                  example: /home/username/lesson2/raw/sales/2022-08-09
+              required:
+                - data
+                - raw_dir
+
+      responses:
+        200:
+          description: OK

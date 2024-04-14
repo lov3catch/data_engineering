@@ -1,0 +1,30 @@
+version: "3.8"
+services:
+  app_job1:
+    build:
+      context: .
+    volumes:
+      - .:/app
+    working_dir: /app
+    expose:
+      - 8081
+    ports:
+      - "8081:8081"
+    command: gunicorn --reload -w 4 -b 0.0.0.0:8081 job1_server:app
+    env_file:
+      - .env
+  app_job2:
+    build:
+      context: .
+    volumes:
+      - .:/app
+    working_dir: /app
+    expose:
+      - 8082
+    ports:
+      - "8082:8082"
+    command: gunicorn --reload -w 4 -b 0.0.0.0:8082 job2_server:app
+    env_file:
+      - .env
+
+
