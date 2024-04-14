@@ -8,7 +8,6 @@
 Вивести кількість фільмів в кожній категорії.
 Результат відсортувати за спаданням.
 */
--- SQL code goes here...
 SELECT c.name, COUNT(fc.film_id) AS films_count
 FROM category c
 JOIN film_category fc ON c.category_id = fc.category_id
@@ -40,7 +39,10 @@ ORDER BY films_count DESC;
 Вивести назви фільмів, яких не має в inventory.
 Запит має бути без оператора IN
 */
--- SQL code goes here...
+select distinct film.title
+from film
+         left outer join inventory on film.film_id = inventory.film_id
+where inventory is null;
 
 
 /*
