@@ -40,7 +40,16 @@ FROM (SELECT SUM(payment.amount) AS total_amount, film_category.category_id
          LEFT JOIN category ON t1.category_id = category.category_id
 ORDER BY total_amount DESC;
 
-
+-- OR
+SELECT DISTINCT
+    SUM(p.amount) OVER (PARTITION BY c.category_id) AS total_amount,
+    c.name
+FROM rental r
+JOIN payment p ON r.rental_id = p.rental_id
+JOIN inventory i ON r.inventory_id = i.inventory_id
+JOIN film_category fc ON i.film_id = fc.film_id
+JOIN category c ON fc.category_id = c.category_id
+ORDER BY total_amount DESC;
 
 
 
@@ -61,3 +70,5 @@ where inventory is null;
 Вивести топ 3 актори, які найбільше зʼявлялись в категорії фільмів “Children”.
 */
 -- SQL code goes here...
+select * from film;
+select * from film_actor;
