@@ -30,14 +30,17 @@ ORDER BY films_count DESC;
 Вивести категорія фільмів, на яку було витрачено найбільше грошей
 в прокаті
 */
-select sum(payment.amount) as total_amount, film_category.category_id
-from rental
-         left join payment on payment.rental_id = rental.rental_id
-         left join inventory on rental.inventory_id = inventory.inventory_id
-         left join film_category on inventory.film_id = film_category.film_id
-         left join category on film_category.category_id = category.category_id
-group by film_category.category_id
+select t1.total_amount, category.name
+from (select sum(payment.amount) as total_amount, film_category.category_id
+      from rental
+               left join payment on payment.rental_id = rental.rental_id
+               left join inventory on rental.inventory_id = inventory.inventory_id
+               left join film_category on inventory.film_id = film_category.film_id
+      group by film_category.category_id) as t1
+         left join category on t1.category_id = category.category_id
 order by total_amount desc;
+
+
 
 
 
