@@ -21,7 +21,22 @@ ORDER BY films_count DESC;
 Вивести 10 акторів, чиї фільми брали на прокат найбільше.
 Результат відсортувати за спаданням.
 */
--- SQL code goes here...
+WITH TopActors AS (SELECT film_actor.actor_id,
+                          COUNT(rental.rental_id) AS rental_count
+                   FROM rental
+                            JOIN inventory ON inventory.inventory_id = rental.inventory_id
+                            JOIN film_actor ON film_actor.film_id = inventory.film_id
+                   GROUP BY film_actor.actor_id
+                   ORDER BY rental_count DESC
+                   LIMIT 10)
+SELECT TopActors.actor_id,
+       actor.first_name,
+       actor.last_name,
+       TopActors.rental_count
+FROM TopActors
+         JOIN actor ON actor.actor_id = TopActors.actor_id
+ORDER BY rental_count desc;
+
 
 
 
