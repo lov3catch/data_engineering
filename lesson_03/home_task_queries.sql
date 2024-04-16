@@ -50,14 +50,13 @@ ORDER BY rental_count DESC;
 в прокаті
 */
 -- Top category by spend amount
-SELECT t1.total_amount, category.name
-FROM (SELECT SUM(payment.amount) AS total_amount, film_category.category_id
-      FROM rental
-               LEFT JOIN payment ON payment.rental_id = rental.rental_id
-               LEFT JOIN inventory ON rental.inventory_id = inventory.inventory_id
-               LEFT JOIN film_category ON inventory.film_id = film_category.film_id
-      GROUP BY film_category.category_id) AS t1
-         LEFT JOIN category ON t1.category_id = category.category_id
+SELECT SUM(payment.amount) AS total_amount, category.name
+FROM rental
+         LEFT JOIN payment ON payment.rental_id = rental.rental_id
+         LEFT JOIN inventory ON rental.inventory_id = inventory.inventory_id
+         LEFT JOIN film_category ON inventory.film_id = film_category.film_id
+         LEFT JOIN category ON film_category.category_id = category.category_id
+GROUP BY category.name
 ORDER BY total_amount DESC;
 
 -- Top category by spend amount (v2)
