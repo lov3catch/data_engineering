@@ -12,7 +12,7 @@ process_sales_dag = DAG(
     max_active_runs=1,
     catchup=True,
     start_date=datetime.strptime('2022-08-09', '%Y-%m-%d'),
-    end_date=datetime.strptime('2022-08-11', '%Y-%m-%d'),
+    end_date=datetime.strptime('2022-08-12', '%Y-%m-%d'),
 )
 
 
