@@ -1,0 +1,61 @@
+version: '3'
+services:
+  postgres:
+    image: postgres:13
+    environment:
+      POSTGRES_USER: airflow
+      POSTGRES_PASSWORD: airflow
+      POSTGRES_DB: airflow
+    expose:
+      - 5432
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - data_engineering_task_07
+
+  webserver:
+    image: apache/airflow:2.9.0
+    restart: always
+    depends_on:
+      - postgres
+    environment:
+      AIRFLOW__CORE__EXECUTOR: LocalExecutor
+      AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:airflow@postgres/airflow
+#      AIRFLOW__CORE__SECRET_KEY: secretpassword
+#      AIRFLOW__CORE__FERNET_KEY: '<generated_fernet_key>'
+#    volumes:
+#      - ./dags:/opt/airflow/dags  # See: airflow/airflow.cfg in apache/airflow
+    ports:
+      - "8080:8080"
+    command: webserver
+    networks:
+      - data_engineering_task_07
+#      - data_engineering_global
+
+  scheduler:
+    image: apache/airflow:2.9.0
+    restart: always
+    depends_on:
+      - postgres
+      - webserver
+    environment:
+      AIRFLOW__CORE__EXECUTOR: LocalExecutor
+      AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:airflow@postgres/airflow
+#      AIRFLOW__CORE__SECRET_KEY: secretpassword
+#      AIRFLOW__CORE__FERNET_KEY: '<generated_fernet_key>'
+    volumes:
+      - ./dags:/opt/airflow/dags  # See: airflow/airflow.cfg in apache/airflow
+    command: scheduler
+    networks:
+      - data_engineering_task_07
+      - data_engineering_global
+
+volumes:
+  postgres_data:
+
+networks:
+  data_engineering_task_07:
+  data_engineering_global:
+    external: true

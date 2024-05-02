@@ -13,6 +13,8 @@ services:
     command: gunicorn --reload -w 4 -b 0.0.0.0:8081 job1_server:app
     env_file:
       - .env
+    networks:
+      - data_engineering_global
   app_job2:
     build:
       context: .
@@ -26,5 +28,9 @@ services:
     command: gunicorn --reload -w 4 -b 0.0.0.0:8082 job2_server:app
     env_file:
       - .env
+    networks:
+      - data_engineering_global
 
-
+networks:
+  data_engineering_global:
+    external: true
