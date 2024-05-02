@@ -3,7 +3,8 @@ from datetime import datetime
 
 from airflow import DAG
 from airflow.operators.empty import EmptyOperator
-from airflow.providers.http.operators.http import HttpOperator
+from airflow.operators.python import PythonOperator
+from airflow.providers.http.hooks.http import HttpHook
 
 process_sales_dag = DAG(
     dag_id="process_sales",
@@ -14,29 +15,35 @@ process_sales_dag = DAG(
     end_date=datetime.strptime('2022-08-11', '%Y-%m-%d'),
 )
 
-extract_data_from_api_params = {
-    "task_id": 'extract_data_from_api',
-    "http_conn_id": 'task2_app_job1',
-    "dag": process_sales_dag,
-    "method": 'POST',
-    "data": json.dumps({
-        "date": "2022-08-09",
-        "raw_dir": "raw/sales/2022-08-09"
-    }),
-    "headers": {'Content-Type': 'application/json'},
-}
 
-convert_to_avro_params = {
-    "task_id": 'convert_to_avro',
-    "http_conn_id": 'task2_app_job2',
-    "dag": process_sales_dag,
-    "method": 'POST',
-    "data": json.dumps({
-        "raw_dir": "raw/sales/2022-08-09",
-        "stg_dir": "stg/sales/2022-08-09"
-    }),
-    "headers": {'Content-Type': 'application/json'},
-}
+def extract_data_from_api_callback(raw_dir, date):
+    request_payload = json.dumps({
+        "raw_dir": raw_dir,
+        "date": date,
+    })
+
+    hook = HttpHook(method='POST', http_conn_id='task2_app_job1')
+    hook.run(data=request_payload, headers={'Content-Type': 'application/json'})
+
+
+extract_data_from_task = PythonOperator(task_id='extract_data_from_api', dag=process_sales_dag,
+                                        python_callable=extract_data_from_api_callback,
+                                        op_kwargs={"raw_dir": "raw/sales/{{ ds }}", "date": "{{ ds }}"})
+
+
+def convert_to_avro_callback(raw_dir, stg_dir):
+    request_payload = json.dumps({
+        "raw_dir": raw_dir,
+        "stg_dir": stg_dir,
+    })
+
+    hook = HttpHook(method='POST', http_conn_id='task2_app_job2')
+    hook.run(data=request_payload, headers={'Content-Type': 'application/json'})
+
+
+convert_to_avro_task = PythonOperator(task_id='convert_to_avro', dag=process_sales_dag,
+                                      python_callable=convert_to_avro_callback,
+                                      op_kwargs={"raw_dir": "raw/sales/{{ ds }}", "stg_dir": "stg/sales/{{ ds }}"})
 
 start = EmptyOperator(
     task_id='start',
@@ -48,4 +55,4 @@ end = EmptyOperator(
     dag=process_sales_dag,
 )
 
-start >> HttpOperator(**extract_data_from_api_params) >> HttpOperator(**convert_to_avro_params) >> end
+start >> extract_data_from_task >> convert_to_avro_task >> end

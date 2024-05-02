@@ -22,9 +22,10 @@ services:
       - postgres
     environment:
       AIRFLOW__CORE__EXECUTOR: LocalExecutor
+      AIRFLOW__WEBSERVER__SECRET_KEY: 'qwerty'
       AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:airflow@postgres/airflow
 #      AIRFLOW__CORE__SECRET_KEY: secretpassword
-#      AIRFLOW__CORE__FERNET_KEY: '<generated_fernet_key>'
+      AIRFLOW__CORE__FERNET_KEY: ''
 #    volumes:
 #      - ./dags:/opt/airflow/dags  # See: airflow/airflow.cfg in apache/airflow
     ports:
@@ -44,7 +45,8 @@ services:
       AIRFLOW__CORE__EXECUTOR: LocalExecutor
       AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:airflow@postgres/airflow
 #      AIRFLOW__CORE__SECRET_KEY: secretpassword
-#      AIRFLOW__CORE__FERNET_KEY: '<generated_fernet_key>'
+      AIRFLOW__CORE__FERNET_KEY: ''
+      AIRFLOW__WEBSERVER__SECRET_KEY: 'qwerty'
     volumes:
       - ./dags:/opt/airflow/dags  # See: airflow/airflow.cfg in apache/airflow
     command: scheduler
