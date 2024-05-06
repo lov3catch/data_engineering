@@ -2,3 +2,5 @@
 /*/.env
 !lesson_02/file_storage/*/sales/.gitignore
 lesson_02/file_storage/*
+
+!lesson_07/dags/.gitignore
