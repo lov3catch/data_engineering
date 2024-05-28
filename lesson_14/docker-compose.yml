@@ -71,7 +71,6 @@ services:
     depends_on:
       - spark-master
       - spark-worker
-    tty: true
 
   notebook:
     image: jupyter/all-spark-notebook

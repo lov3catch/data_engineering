@@ -8,6 +8,7 @@ docker-compose up -d
 ### Using jupyter-notebook
 - Open: http://127.0.0.1:8888
 - Run: spark_dataframe_ht.ipynb
+- Note, obtain token: ```docker-compose exec notebook jupyter server list``` 
 
 ### Using spark-submit
 ```shell
