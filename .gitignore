@@ -4,3 +4,7 @@
 lesson_02/file_storage/*
 
 !lesson_07/dags/.gitignore
+
+!lesson_17/data/processed/bronze/.gitkeep
+!lesson_17/data/processed/silver/.gitkeep
+!lesson_17/data/processed/gold/.gitkeep
