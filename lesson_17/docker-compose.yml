@@ -116,7 +116,8 @@ services:
       AIRFLOW__WEBSERVER__SECRET_KEY: 'qwerty'
     volumes:
       - ./dags:/opt/airflow/dags  # See: airflow/airflow.cfg in apache/airflow
-    #      - ./../lesson_02/file_storage/raw/sales/:/home/airflow/sales/
+      - ./file_storage/raw/:/home/airflow/raw/
+      - ./file_storage/processed/:/home/airflow/processed/
     command: scheduler
 volumes:
   postgres_data:
