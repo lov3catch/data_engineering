@@ -16,7 +16,7 @@ schema = StructType([
     StructField('product_name', StringType(), False),
 ])
 
-customer_df = spark.read.csv('./file_storage/processed/bronze/sales/*', header=True, inferSchema=True)
+customer_df = spark.read.csv('/app/file_storage/processed/bronze/sales/*', header=True, inferSchema=True)
 
 customer_df = customer_df.selectExpr("Price as price", "CustomerId as client_id", "PurchaseDate as purchase_date",
                                      "Product as product_name")
@@ -30,7 +30,6 @@ def normalize_purchase_date(date_str):
             pass
     return None
 
-
 parse_date_udf = F.udf(normalize_purchase_date, StringType())
 
 customer_df = customer_df.select(
@@ -39,4 +38,4 @@ customer_df = customer_df.select(
     parse_date_udf(F.col("purchase_date")).alias('purchase_date'),
     F.lower(F.col("product_name")).alias('product_name'))
 
-customer_df.write.partitionBy('purchase_date').csv('./file_storage/processed/silver/sales/sales.csv', header=True)
+customer_df.write.partitionBy('purchase_date').csv('/app/file_storage/processed/silver/sales/sales.csv', header=True)

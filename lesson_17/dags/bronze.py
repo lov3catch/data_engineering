@@ -32,7 +32,7 @@ def copy_file_callback(**kwargs):
 
 
 with DAG(
-        dag_id="sales-raw-to-bronze-1",
+        dag_id="sales-raw-to-bronze",
         max_active_runs=1,
         start_date=datetime.strptime('2022-09-1', '%Y-%m-%d'),
         end_date=datetime.strptime('2022-09-30', '%Y-%m-%d'),
