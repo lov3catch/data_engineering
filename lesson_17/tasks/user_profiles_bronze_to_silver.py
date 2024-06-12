@@ -1,5 +1,5 @@
 from pyspark.sql import SparkSession
-from pyspark.sql.types import StructField, StringType, StructType
+from pyspark.sql.types import StructField, StringType, StructType, IntegerType, DateType
 import pyspark.sql.functions as F
 
 spark = SparkSession.builder \
@@ -11,7 +11,7 @@ schema = StructType([
     StructField('email', StringType(), False),
     StructField('full_name', StringType(), False),
     StructField('state', StringType(), False),
-    StructField('birth_date', StringType(), False),
+    StructField('birth_date', DateType(), False),     # DateType?
     StructField('phone_number', StringType(), False),
 ])
 
