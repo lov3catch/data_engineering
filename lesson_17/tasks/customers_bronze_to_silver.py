@@ -18,4 +18,7 @@ customer_df = spark.read.csv('/app/file_storage/processed/bronze/customers/*', h
 customer_df = customer_df.selectExpr("Id as client_id", "FirstName as first_name", "LastName as last_name",
                                      "Email as email", "RegistrationDate as registration_date", "State as state")
 
-customer_df.write.csv('/app/file_storage/processed/silver/customers/customers.csv', header=True)
+deduplicated_customer_df = customer_df.dropDuplicates()
+deduplicated_customer_df.write.csv('/app/file_storage/processed/silver/customers/customers.csv', header=True)
+
+
