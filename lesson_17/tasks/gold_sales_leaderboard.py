@@ -22,8 +22,8 @@ user_profiles_enriched_schema = StructType([
 sale_schema = StructType([
     StructField('price', FloatType(), False),
     StructField('client_id', IntegerType(), False),
-    StructField('product_name', StringType(), False),
     StructField('purchase_date', StringType(), False),
+    StructField('product_name', StringType(), False),
 ])
 
 user_profiles_enriched_df = spark.read.csv('/app/file_storage/processed/gold/user_profiles/*', header=True, schema=user_profiles_enriched_schema)
@@ -34,13 +34,14 @@ age_max = 30
 
 product = 'tv'
 
-purchase_at_from = '2024-09-01'
-purchase_at_to = '2024-09-10'
-
-
+purchase_at_from = '2022-09-01'
+purchase_at_to = '2022-09-10'
 
 sales_enriched_df = sales_df.join(user_profiles_enriched_df, user_profiles_enriched_df.client_id == sales_df.client_id, 'left')
-sales_enriched_df = sales_enriched_df.where(user_profiles_enriched_df.age > 20).where(user_profiles_enriched_df.age < 30)
+
+sales_enriched_df = sales_enriched_df.where(user_profiles_enriched_df.age > age_min).where(user_profiles_enriched_df.age < age_max)
+sales_enriched_df = sales_enriched_df.where(sales_df.product_name == 'tv')
+sales_enriched_df = sales_enriched_df.where(sales_df.purchase_date > purchase_at_from).where(sales_df.purchase_date < purchase_at_to)
 sales_enriched_df = sales_enriched_df.groupBy(user_profiles_enriched_df.state).agg(F.sum(sales_df.price).alias('total')).sort(F.desc('total'))
 
-sales_enriched_df.show()
+sales_enriched_df.write.csv('/app/file_storage/processed/gold/sales/tv_sales_leaderboard.csv', header=True)
