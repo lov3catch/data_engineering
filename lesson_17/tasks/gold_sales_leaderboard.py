@@ -23,6 +23,7 @@ sale_schema = StructType([
     StructField('price', FloatType(), False),
     StructField('client_id', IntegerType(), False),
     StructField('product_name', StringType(), False),
+    StructField('purchase_date', StringType(), False),
 ])
 
 user_profiles_enriched_df = spark.read.csv('/app/file_storage/processed/gold/user_profiles/*', header=True, schema=user_profiles_enriched_schema)
