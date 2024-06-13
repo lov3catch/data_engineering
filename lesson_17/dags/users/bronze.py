@@ -1,26 +1,39 @@
-import os
 import shutil
 
 from airflow import DAG
+from airflow.models import Param
 from airflow.operators.empty import EmptyOperator
 from airflow.operators.python import PythonOperator
 
 
 def copy_file_callback(**kwargs):
-    a = f"/app/file_storage/raw/user_profiles/user_profiles.json"
-    b = f"/app/file_storage/processed/bronze/user_profiles/user_profiles.json"
+    """
+    Copy users data from raw to silver
+    :param kwargs:
+    :return:
+    """
 
-    os.makedirs(f"/app/file_storage/processed/bronze/user_profiles/", exist_ok=True)
-
-    shutil.copyfile(a, b)
+    shutil.copyfile(kwargs['params']['src'], kwargs['params']['dst'])
 
 
 with DAG(
         dag_id="user-profiles-raw-to-bronze",
         max_active_runs=1,
+        params={
+            "src": Param(
+                "/app/file_storage/raw/user_profiles/user_profiles.json",
+                type="string",
+                title="Raw data is here",
+            ),
+            "dst": Param(
+                "/app/file_storage/processed/bronze/user_profiles/user_profiles.json",
+                type="string",
+                title="Processed data is here",
+            ),
+        },
         tags=['user_profiles', 'bronze']
-) as upload_to_bucket_dag:
-    start = EmptyOperator(task_id='start', dag=upload_to_bucket_dag)
+) as dag:
+    start = EmptyOperator(task_id='start', dag=dag)
 
     copy_file = PythonOperator(
         task_id='copy_file',
@@ -28,6 +41,6 @@ with DAG(
         provide_context=True
     )
 
-    end = EmptyOperator(task_id='end', dag=upload_to_bucket_dag)
+    end = EmptyOperator(task_id='end', dag=dag)
 
     start >> copy_file >> end
