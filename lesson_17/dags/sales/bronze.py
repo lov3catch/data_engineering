@@ -17,7 +17,7 @@ def prepare_file_path_callback(**kwargs):
     """
     execution_date = kwargs['execution_date'].strftime('%Y-%m-') + str(kwargs['execution_date'].day)
     src = os.path.join(kwargs['params']['src'], execution_date)
-    dst = os.path.join(kwargs['params']['src'], execution_date)
+    dst = os.path.join(kwargs['params']['dst'], execution_date)
 
     if os.path.isdir(src):
         os.makedirs(dst, exist_ok=True)
@@ -32,9 +32,9 @@ def copy_file_callback(**kwargs):
     """
     execution_date = kwargs['execution_date'].strftime('%Y-%m-') + str(kwargs['execution_date'].day)
     src = os.path.join(kwargs['params']['src'], execution_date, f"{execution_date}__sales.csv")
-    dst = os.path.join(kwargs['params']['src'], execution_date, f"{execution_date}__sales.csv")
+    dst = os.path.join(kwargs['params']['dst'], execution_date, f"{execution_date}__sales.csv")
 
-    if os.path.isdir(src):
+    if os.path.isdir(os.path.join(kwargs['params']['src'], execution_date)):
         shutil.copyfile(src, dst)
 
 

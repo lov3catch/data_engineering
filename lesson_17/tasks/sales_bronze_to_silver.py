@@ -9,13 +9,6 @@ spark = SparkSession.builder \
     .appName("DataFrameAPIExample") \
     .getOrCreate()
 
-# schema = StructType([
-#     StructField('price', StringType(), False),
-#     StructField('client_id', StringType(), False),
-#     StructField('purchase_date', StringType(), False),
-#     StructField('product_name', StringType(), False),
-# ])
-
 customer_df = spark.read.csv('/app/file_storage/processed/bronze/sales/*', header=True, inferSchema=True)
 
 customer_df = customer_df.selectExpr("Price as price", "CustomerId as client_id", "PurchaseDate as purchase_date",
@@ -43,4 +36,4 @@ customer_df = customer_df.select(
 customer_df = customer_df.select('*', F.col('purchase_date').alias('purchase_date_partition_by'))
 
 customer_df.write.partitionBy('purchase_date_partition_by').csv('/app/file_storage/processed/silver/sales/sales.csv',
-                                                                header=True)
+                                                                header=True, mode="overwrite")
