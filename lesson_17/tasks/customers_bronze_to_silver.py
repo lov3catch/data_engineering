@@ -19,6 +19,5 @@ customer_df = customer_df.selectExpr("Id as client_id", "FirstName as first_name
                                      "Email as email", "RegistrationDate as registration_date", "State as state")
 
 deduplicated_customer_df = customer_df.dropDuplicates()
-deduplicated_customer_df.write.csv('/app/file_storage/processed/silver/customers/customers.csv', header=True)
-
-
+deduplicated_customer_df.write.csv('/app/file_storage/processed/silver/customers/customers.csv', header=True,
+                                   mode="overwrite")

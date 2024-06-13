@@ -1,48 +1,65 @@
+import datetime
 import os
 import shutil
-from datetime import datetime
 
 from airflow import DAG
-from airflow.models import TaskInstance
+from airflow.models import Param
 from airflow.operators.empty import EmptyOperator
 from airflow.operators.python import PythonOperator
 
-def prepare_file_path(**kwargs):
-    ti: TaskInstance = kwargs['ti']
 
+def prepare_file_path_callback(**kwargs):
+    """
+    Prepare path for customers silver data
+    :param kwargs:
+    :return:
+    """
     execution_date = kwargs['execution_date'].strftime('%Y-%m-') + str(kwargs['execution_date'].day)
+    src = os.path.join(kwargs['params']['src'], execution_date)
+    dst = os.path.join(kwargs['params']['dst'], execution_date)
 
-    src_file = f"/app/file_storage/raw/customers/{execution_date}/"
-    dst_path = f"/app/file_storage/processed/bronze/customers/{execution_date}/"
+    if os.path.isdir(src):
+        os.makedirs(dst, exist_ok=True)
 
-    os.makedirs(dst_path, exist_ok=True)
-
-    # shutil.copytree(src_file, dst_path, dirs_exist_ok=True)
-
-    ti.xcom_push(key='src', value=src_file)
-    ti.xcom_push(key='dst', value=dst_path)
 
 def copy_file_callback(**kwargs):
+    """
+    Copy customers data from raw to silver
+    :param kwargs:
+    :return:
+    """
     execution_date = kwargs['execution_date'].strftime('%Y-%m-') + str(kwargs['execution_date'].day)
+    src = os.path.join(kwargs['params']['src'], execution_date)
+    dst = os.path.join(kwargs['params']['dst'], execution_date)
 
-    a = f"/app/file_storage/raw/customers/{execution_date}/"
-    b = f"/app/file_storage/processed/bronze/customers/{execution_date}/"
-
-    shutil.copytree(a, b, dirs_exist_ok=True)
+    if os.path.isdir(src):
+        shutil.copytree(src, dst, dirs_exist_ok=True)
 
 
 with DAG(
         dag_id="customers-raw-to-bronze",
         max_active_runs=1,
-        start_date=datetime.strptime('2022-08-1', '%Y-%m-%d'),
-        end_date=datetime.strptime('2022-08-5', '%Y-%m-%d'),
+        start_date=datetime.datetime(year=2022, month=8, day=1),
+        schedule='@daily',
+        params={
+            "src": Param(
+                "/app/file_storage/raw/customers/",
+                type="string",
+                title="Raw data is here",
+            ),
+            "dst": Param(
+                "/app/file_storage/processed/bronze/customers/",
+                type="string",
+                title="Processed data is here",
+            ),
+        },
         tags=['customers', 'bronze']
-) as upload_to_bucket_dag:
-    start = EmptyOperator(task_id='start', dag=upload_to_bucket_dag)
+) as dag:
+    start = EmptyOperator(task_id='start', dag=dag)
 
     prepare_path = PythonOperator(
         task_id='prepare_path',
-        python_callable=prepare_file_path,
+        python_callable=prepare_file_path_callback,
         provide_context=True,
     )
 
@@ -52,6 +69,6 @@ with DAG(
         provide_context=True
     )
 
-    end = EmptyOperator(task_id='end', dag=upload_to_bucket_dag)
+    end = EmptyOperator(task_id='end', dag=dag)
 
     start >> prepare_path >> copy_file >> end

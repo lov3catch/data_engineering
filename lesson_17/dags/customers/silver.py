@@ -1,39 +1,42 @@
-from datetime import datetime
+import datetime
 
 from airflow import DAG
+from airflow.models import Param
 from airflow.operators.empty import EmptyOperator
 from airflow.providers.apache.spark.operators.spark_submit import SparkSubmitOperator
 
 spark_master = "spark://spark-master:7077"
 spark_app_name = "DataFrameAPIExample"
-file_path = "/usr/local/spark/resources/data/test.csv"
 
 args = {
     'owner': 'spark',
 }
 
-dag = DAG(
-    dag_id="customers-bronze-to-silver",
-    start_date=datetime(2022, 8, 1),
-    end_date=datetime(2022, 8, 5),
-    max_active_runs=1,
-    default_args=args,
-    tags=['customers', 'silver']
-)
+with DAG(
+        dag_id="customers-bronze-to-silver",
+        start_date=datetime.datetime(year=2022, month=8, day=1),
+        schedule='@daily',
+        max_active_runs=1,
+        default_args=args,
+        params={
+            "application": Param(
+                '/app/tasks/customers_bronze_to_silver.py',
+                type="string",
+                title="Spark application",
+            ),
+        },
+        tags=['customers', 'silver']
+) as dag:
+    start = EmptyOperator(task_id='start', dag=dag)
+    run_spark_job = SparkSubmitOperator(
+        dag=dag,
+        task_id='normalize_customers_data',
+        application=dag.params.get('application'),
+        name=spark_app_name,
+        conn_id="spark_default",
+        conf={"spark.master": spark_master},
+    )
 
-start = EmptyOperator(task_id='start', dag=dag)
-run_spark_job = SparkSubmitOperator(
-    dag=dag,
-    task_id='run_spark_job2',
-    application='/app/tasks/customers_bronze_to_silver.py',
-    name=spark_app_name,
-    verbose=True,
-    conn_id="spark_default",
-    conf={"spark.master": spark_master},
-    application_args=[
-    ]
-)
+    end = EmptyOperator(task_id='end', dag=dag)
 
-end = EmptyOperator(task_id='end', dag=dag)
-
-start >> run_spark_job >> end
+    start >> run_spark_job >> end
