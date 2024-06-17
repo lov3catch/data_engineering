@@ -19,10 +19,10 @@ user_profiles_df = spark.read.json('/app/file_storage/processed/bronze/user_prof
 
 split_col = F.split(user_profiles_df['full_name'], ' ')
 
-user_profiles_df = user_profiles_df.withColumn('first_name', split_col.getItem(0))
-user_profiles_df = user_profiles_df.withColumn('last_name', split_col.getItem(1))
-user_profiles_df = user_profiles_df.withColumn("age",
-                                               F.floor(F.datediff(F.current_date(), F.col("birth_date")) / 365.25))
+user_profiles_df = (user_profiles_df
+                    .withColumn('first_name', split_col.getItem(0))
+                    .withColumn('last_name', split_col.getItem(1))
+                    .withColumn("age", F.floor(F.datediff(F.current_date(), F.col("birth_date")) / 365.25)))
 
 user_profiles_df = user_profiles_df.select('email', 'first_name', 'last_name', 'state', 'birth_date', 'age',
                                            'phone_number')
