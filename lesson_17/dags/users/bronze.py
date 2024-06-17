@@ -16,21 +16,23 @@ def copy_file_callback(**kwargs):
     shutil.copyfile(kwargs['params']['src'], kwargs['params']['dst'])
 
 
+dag_params = {
+    "src": Param(
+        "/app/file_storage/raw/user_profiles/user_profiles.json",
+        type="string",
+        title="Raw data is here",
+    ),
+    "dst": Param(
+        "/app/file_storage/processed/bronze/user_profiles/user_profiles.json",
+        type="string",
+        title="Processed data is here",
+    ),
+}
+
 with DAG(
         dag_id="user-profiles-raw-to-bronze",
         max_active_runs=1,
-        params={
-            "src": Param(
-                "/app/file_storage/raw/user_profiles/user_profiles.json",
-                type="string",
-                title="Raw data is here",
-            ),
-            "dst": Param(
-                "/app/file_storage/processed/bronze/user_profiles/user_profiles.json",
-                type="string",
-                title="Processed data is here",
-            ),
-        },
+        params=dag_params,
         tags=['user_profiles', 'bronze']
 ) as dag:
     start = EmptyOperator(task_id='start', dag=dag)

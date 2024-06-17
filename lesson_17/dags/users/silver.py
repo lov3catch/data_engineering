@@ -10,17 +10,19 @@ args = {
     'owner': 'spark',
 }
 
+dag_params = {
+    "application": Param(
+        '/app/tasks/user_profiles_bronze_to_silver.py',
+        type="string",
+        title="Spark application",
+    ),
+}
+
 with DAG(
         dag_id="user-profiles-bronze-to-silver",
         max_active_runs=1,
         default_args=args,
-        params={
-            "application": Param(
-                '/app/tasks/user_profiles_bronze_to_silver.py',
-                type="string",
-                title="Spark application",
-            ),
-        },
+        params=dag_params,
         tags=['user_profiles', 'silver']
 ) as dag:
     start = EmptyOperator(task_id='start', dag=dag)
