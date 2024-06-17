@@ -36,23 +36,25 @@ def copy_file_callback(**kwargs):
         shutil.copytree(src, dst, dirs_exist_ok=True)
 
 
+dag_params = {
+    "src": Param(
+        "/app/file_storage/raw/customers/",
+        type="string",
+        title="Raw data is here",
+    ),
+    "dst": Param(
+        "/app/file_storage/processed/bronze/customers/",
+        type="string",
+        title="Processed data is here",
+    ),
+}
+
 with DAG(
         dag_id="customers-raw-to-bronze",
         max_active_runs=1,
         start_date=datetime.datetime(year=2022, month=8, day=1),
         schedule='@daily',
-        params={
-            "src": Param(
-                "/app/file_storage/raw/customers/",
-                type="string",
-                title="Raw data is here",
-            ),
-            "dst": Param(
-                "/app/file_storage/processed/bronze/customers/",
-                type="string",
-                title="Processed data is here",
-            ),
-        },
+        params=dag_params,
         tags=['customers', 'bronze']
 ) as dag:
     start = EmptyOperator(task_id='start', dag=dag)
