@@ -38,23 +38,25 @@ def copy_file_callback(**kwargs):
         shutil.copyfile(src, dst)
 
 
+dag_params = {
+    "src": Param(
+        "/app/file_storage/raw/sales/",
+        type="string",
+        title="Raw data is here",
+    ),
+    "dst": Param(
+        "/app/file_storage/processed/bronze/sales/",
+        type="string",
+        title="Processed data is here",
+    ),
+}
+
 with DAG(
         dag_id="sales-raw-to-bronze",
         max_active_runs=1,
         start_date=datetime.datetime(year=2022, month=9, day=1),
         schedule='@daily',
-        params={
-            "src": Param(
-                "/app/file_storage/raw/sales/",
-                type="string",
-                title="Raw data is here",
-            ),
-            "dst": Param(
-                "/app/file_storage/processed/bronze/sales/",
-                type="string",
-                title="Processed data is here",
-            ),
-        },
+        params=dag_params,
         tags=['sales', 'bronze']
 ) as dag:
     start = EmptyOperator(task_id='start', dag=dag)
