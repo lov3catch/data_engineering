@@ -5,6 +5,8 @@ lesson_02/file_storage/*
 
 !lesson_07/dags/.gitignore
 
+lesson_10/dags/key.json
+
 !lesson_17/file_storage/processed/bronze/.gitkeep
 lesson_17/file_storage/processed/bronze/
 !lesson_17/file_storage/processed/silver/.gitkeep
