@@ -4,3 +4,10 @@
 lesson_02/file_storage/*
 
 !lesson_07/dags/.gitignore
+
+!lesson_17/file_storage/processed/bronze/.gitkeep
+lesson_17/file_storage/processed/bronze/
+!lesson_17/file_storage/processed/silver/.gitkeep
+lesson_17/file_storage/processed/silver/
+!lesson_17/file_storage/processed/gold/.gitkeep
+lesson_17/file_storage/processed/gold/
